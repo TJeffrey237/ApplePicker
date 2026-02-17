@@ -7,6 +7,9 @@ public class Apple : MonoBehaviour
     private Transform basketTransform;
     private Rigidbody rb;
 
+    [Header("Difficulty")]
+    public LevelDifficulty myLevel;
+
     [Header("Magnetic Settings")]
     public bool isMagnetic = false;
     public float magnetRange = 15f;
@@ -48,6 +51,7 @@ public class Apple : MonoBehaviour
             float distance = Vector3.Distance(transform.position, basketTransform.position);
             if(distance < magnetRange) 
             {
+                rb.useGravity = false;
                 Vector3 direction = (basketTransform.position - transform.position).normalized;
                 rb.velocity = direction * magnetStrength;
             }

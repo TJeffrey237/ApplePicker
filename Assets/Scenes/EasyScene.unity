@@ -794,6 +794,14 @@ PrefabInstance:
       propertyPath: applePrefab
       value: 
       objectReference: {fileID: 46553567901000496, guid: b98e650b0d15819499d9dc6a0773d0b5, type: 3}
+    - target: {fileID: -3379824716780257191, guid: 205bc110a2bafd24da2eee11a45a2cfa, type: 3}
+      propertyPath: leftAndRightEdge
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: -3379824716780257191, guid: 205bc110a2bafd24da2eee11a45a2cfa, type: 3}
+      propertyPath: chanceToChangeDirections
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 6765547081401524324, guid: 205bc110a2bafd24da2eee11a45a2cfa, type: 3}
       propertyPath: m_IsKinematic
       value: 1

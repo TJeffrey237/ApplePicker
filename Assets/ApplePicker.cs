@@ -41,8 +41,7 @@ public class ApplePicker : MonoBehaviour
 
         if(basketList.Count == 0)
         {
-            string sceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(sceneName);
+            SceneManager.LoadSceneAsync(0);
         }
     }
 

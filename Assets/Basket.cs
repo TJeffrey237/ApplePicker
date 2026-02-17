@@ -17,11 +17,19 @@ public class Basket : MonoBehaviour
     };
 
     private Renderer basketRenderer;
+    private AppleTree treeScript;
+
     // Start is called before the first frame update
     void Start()
     {
         basketRenderer = GetComponent<Renderer>();
-        UpdateColor();
+        GameObject tree = GameObject.Find("Apple Tree"); 
+        treeScript = tree.GetComponent<AppleTree>();
+
+        if(treeScript.levelType == LevelDifficulty.Medium)
+        {
+            UpdateColor();
+        }
         GameObject scoreGO = GameObject.Find("ScoreCounter");
         scoreGT = scoreGO.GetComponent<TextMeshProUGUI>();
         scoreGT.text = "0";
@@ -36,6 +44,11 @@ public class Basket : MonoBehaviour
         Vector3 pos = this.transform.position;
         pos.x = mousePos3D.x;
         this.transform.position = pos;
+
+        if (treeScript.levelType != LevelDifficulty.Medium)
+        {
+            return; 
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
