@@ -133,7 +133,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &-4809892686256304469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,3 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c20c6f3827da5564391902690dde5d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMagnetic: 0
+  magnetRange: 15
+  magnetStrength: 20

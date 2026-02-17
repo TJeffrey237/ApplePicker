@@ -7,7 +7,7 @@ public class ApplePicker : MonoBehaviour
 {
     [Header("Set in Inspector")]
     public GameObject basketPrefab;
-    public int numBaskets = 3;
+    public int numBaskets = 1;
     public float basketBottomY = -14f;
     public float basketSpacingY = 2f;    
     public List<GameObject> basketList;
@@ -41,7 +41,7 @@ public class ApplePicker : MonoBehaviour
 
         if(basketList.Count == 0)
         {
-            SceneManager.LoadScene("Scene0");
+            SceneManager.LoadScene("EasyScene");
         }
     }
 
