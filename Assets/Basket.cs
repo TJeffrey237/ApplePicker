@@ -16,6 +16,13 @@ public class Basket : MonoBehaviour
         Color.blue
     };
 
+    [Header("Hard Mode Settings")]
+    public int appleAmmo = 10;
+    public float lightRadiusMult = 2f;
+    public GameObject appleProjectile;
+    public float firingForce = 20f;
+
+    private Light basketLight;
     private Renderer basketRenderer;
     private AppleTree treeScript;
 
@@ -23,7 +30,8 @@ public class Basket : MonoBehaviour
     void Start()
     {
         basketRenderer = GetComponent<Renderer>();
-        GameObject tree = GameObject.Find("Apple Tree"); 
+        GameObject tree = GameObject.Find("Apple Tree");
+        basketLight = GetComponentInChildren<Light>(); 
         treeScript = tree.GetComponent<AppleTree>();
 
         if(treeScript.levelType == LevelDifficulty.Medium)
@@ -45,11 +53,18 @@ public class Basket : MonoBehaviour
         pos.x = mousePos3D.x;
         this.transform.position = pos;
 
-        if (treeScript.levelType != LevelDifficulty.Medium)
+        if (treeScript.levelType == LevelDifficulty.Hard)
         {
-            return; 
+            HardModeControls();
         }
+        if (treeScript.levelType == LevelDifficulty.Medium)
+        {
+            ColorSwitching();
+        }
+    }
 
+    void ColorSwitching()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             currentColor = 0;
@@ -67,11 +82,48 @@ public class Basket : MonoBehaviour
         }
     }
 
+    void HardModeControls()
+    {
+        if(basketLight != null)
+        {
+            basketLight.range = 5f + (appleAmmo * 0.5f);
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && appleAmmo > 0)
+        {
+            FireApple();
+        }
+    }
+
+    void FireApple()
+    {
+        appleAmmo--;
+        GameObject projectile = Instantiate(appleProjectile, transform.position + Vector3.up * 1f,  Quaternion.identity);
+
+        Apple appleScript = projectile.GetComponent<Apple>();
+        appleScript.isMagnetic = false;
+        
+        projectile.GetComponent<Renderer>().material.color = Color.yellow;
+        projectile.tag = "Projectile";
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.AddForce(Vector3.up * firingForce, ForceMode.Impulse);
+        Destroy(projectile, 3f);
+    }
+
     void OnCollisionEnter(Collision coll)
     {
         GameObject collidedWith = coll.gameObject;
+        if (collidedWith.tag == "Projectile")
+        {
+            return; 
+        }
         if(collidedWith.tag == "Apple")
         {
+            if(treeScript.levelType == LevelDifficulty.Hard)
+            {
+                appleAmmo++;
+            }
             Apple appleScript = collidedWith.GetComponent<Apple>();
             if(appleScript.appleColor == this.currentColor)
             {
@@ -88,7 +140,6 @@ public class Basket : MonoBehaviour
                 ApplePicker apScript = Camera.main.GetComponent<ApplePicker>();
                 apScript.AppleDestroyed();
             }
-
             Destroy(collidedWith);
         }
     }

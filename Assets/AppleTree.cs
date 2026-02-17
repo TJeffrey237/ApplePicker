@@ -54,7 +54,9 @@ public class AppleTree : MonoBehaviour
             }
             else if(levelType == LevelDifficulty.Hard)
             {
-                // yes
+                appleScript.appleColor = 0;
+                apple.GetComponent<Renderer>().material.color = appleColors[0];
+                appleScript.isMagnetic = false;
             }
         }
         Invoke("DropApple", secondsBetweenAppleDrops);
