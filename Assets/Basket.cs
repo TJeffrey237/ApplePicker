@@ -7,9 +7,21 @@ public class Basket : MonoBehaviour
 {
     [Header("Set Dynamically")]
     public TextMeshProUGUI scoreGT;
+
+    public int currentColor = 0;
+    public Color[] colors =
+    {
+        Color.red,
+        Color.green,
+        Color.blue
+    };
+
+    private Renderer basketRenderer;
     // Start is called before the first frame update
     void Start()
     {
+        basketRenderer = GetComponent<Renderer>();
+        UpdateColor();
         GameObject scoreGO = GameObject.Find("ScoreCounter");
         scoreGT = scoreGO.GetComponent<TextMeshProUGUI>();
         scoreGT.text = "0";
@@ -24,6 +36,22 @@ public class Basket : MonoBehaviour
         Vector3 pos = this.transform.position;
         pos.x = mousePos3D.x;
         this.transform.position = pos;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            currentColor = 0;
+            UpdateColor();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            currentColor = 1;
+            UpdateColor();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            currentColor = 2;
+            UpdateColor();
+        }
     }
 
     void OnCollisionEnter(Collision coll)
@@ -31,16 +59,29 @@ public class Basket : MonoBehaviour
         GameObject collidedWith = coll.gameObject;
         if(collidedWith.tag == "Apple")
         {
-            Destroy(collidedWith);
-
-            int score = int.Parse(scoreGT.text);
-            score += 100;
-            scoreGT.text = score.ToString();
-
-            if(score > HighScore.score)
+            Apple appleScript = collidedWith.GetComponent<Apple>();
+            if(appleScript.appleColor == this.currentColor)
             {
-                HighScore.score = score;
+                int score = int.Parse(scoreGT.text);
+                score += 100;
+                scoreGT.text = score.ToString();
+                if(score > HighScore.score)
+                {
+                    HighScore.score = score;
+                }
             }
+            else
+            {
+                ApplePicker apScript = Camera.main.GetComponent<ApplePicker>();
+                apScript.AppleDestroyed();
+            }
+
+            Destroy(collidedWith);
         }
+    }
+
+    void UpdateColor()
+    {
+        basketRenderer.material.color = colors[currentColor];
     }
 }

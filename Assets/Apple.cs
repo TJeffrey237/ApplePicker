@@ -6,12 +6,16 @@ public class Apple : MonoBehaviour
 {
     private Transform basketTransform;
     private Rigidbody rb;
-    
+
     [Header("Magnetic Settings")]
     public bool isMagnetic = false;
     public float magnetRange = 15f;
     public float magnetStrength = 20f;
     public static float bottomY = -20f;
+
+    [Header("Color Settings")]
+    public int appleColor = 0;
+    public bool canChangeColor = false;
     
     // Start is called before the first frame update
     void Start()
