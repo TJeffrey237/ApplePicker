@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -7,7 +5,9 @@ public class Basket : MonoBehaviour
 {
     [Header("Set Dynamically")]
     public TextMeshProUGUI scoreGT;
+    public TextMeshProUGUI ammoGT;
 
+    [Header("Basket Color Settings")]
     public int currentColor = 0;
     public Color[] colors =
     {
@@ -17,10 +17,15 @@ public class Basket : MonoBehaviour
     };
 
     [Header("Hard Mode Settings")]
-    public int appleAmmo = 10;
+    public int appleAmmo = 0;
     public float lightRadiusMult = 2f;
     public GameObject appleProjectile;
     public float firingForce = 20f;
+
+    [Header("Audio Settings")]
+    public AudioClip catchSound;
+    public AudioClip shootSound;
+    private AudioSource basketAudio;
 
     private Light basketLight;
     private Renderer basketRenderer;
@@ -29,6 +34,7 @@ public class Basket : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        basketAudio = GetComponent<AudioSource>();
         basketRenderer = GetComponent<Renderer>();
         GameObject tree = GameObject.Find("Apple Tree");
         basketLight = GetComponentInChildren<Light>(); 
@@ -41,6 +47,13 @@ public class Basket : MonoBehaviour
         GameObject scoreGO = GameObject.Find("ScoreCounter");
         scoreGT = scoreGO.GetComponent<TextMeshProUGUI>();
         scoreGT.text = "0";
+
+        GameObject ammoGO = GameObject.Find("AmmoCounter");
+        if (ammoGO != null) 
+        {
+            ammoGT = ammoGO.GetComponent<TextMeshProUGUI>();
+            ammoGT.text = "Apple Ammo: " + appleAmmo.ToString();
+        }
     }
 
     // Update is called once per frame
@@ -49,9 +62,9 @@ public class Basket : MonoBehaviour
         Vector3 mousePos2D = Input.mousePosition;
         mousePos2D.z = -Camera.main.transform.position.z;
         Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(mousePos2D);
-        Vector3 pos = this.transform.position;
+        Vector3 pos = transform.position;
         pos.x = mousePos3D.x;
-        this.transform.position = pos;
+        transform.position = pos;
 
         if (treeScript.levelType == LevelDifficulty.Hard)
         {
@@ -82,11 +95,20 @@ public class Basket : MonoBehaviour
         }
     }
 
+    // This handles the light control and shooting in the hard difficulty
     void HardModeControls()
     {
         if(basketLight != null)
         {
-            basketLight.range = 5f + (appleAmmo * 0.5f);
+            basketLight.range = 10f + (appleAmmo * lightRadiusMult);
+            if(appleAmmo < 2)
+            {
+                basketLight.intensity = 5.0f; 
+            }
+            else
+            {
+                basketLight.intensity = 2.0f;
+            }
         }
         if (Input.GetKeyDown(KeyCode.Space) && appleAmmo > 0)
         {
@@ -96,7 +118,9 @@ public class Basket : MonoBehaviour
 
     void FireApple()
     {
+        basketAudio.PlayOneShot(shootSound);
         appleAmmo--;
+        ammoGT.text = "Apple Ammo: " + appleAmmo.ToString();
         GameObject projectile = Instantiate(appleProjectile, transform.position + Vector3.up * 1f,  Quaternion.identity);
 
         Apple appleScript = projectile.GetComponent<Apple>();
@@ -120,9 +144,11 @@ public class Basket : MonoBehaviour
         }
         if(collidedWith.tag == "Apple")
         {
+            basketAudio.PlayOneShot(catchSound);
             if(treeScript.levelType == LevelDifficulty.Hard)
             {
                 appleAmmo++;
+                ammoGT.text = "Apple Ammo: " + appleAmmo.ToString();
             }
             Apple appleScript = collidedWith.GetComponent<Apple>();
             if(appleScript.appleColor == this.currentColor)

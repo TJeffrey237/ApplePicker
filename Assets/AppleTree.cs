@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum LevelDifficulty
@@ -33,12 +31,13 @@ public class AppleTree : MonoBehaviour
 
     void DropApple()
     {
-        GameObject apple = Instantiate<GameObject>(applePrefab);
+        GameObject apple = Instantiate(applePrefab);
         apple.transform.position = transform.position;
     
         Apple appleScript = apple.GetComponent<Apple>();
         if (appleScript != null)
         {
+            // adjusts apple behavior based on difficulty
             if(levelType == LevelDifficulty.Easy)
             {
                 appleScript.appleColor = 0; 
@@ -81,7 +80,7 @@ public class AppleTree : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(UnityEngine.Random.value < chanceToChangeDirections)
+        if(Random.value < chanceToChangeDirections)
         {
             speed *= -1;
         }

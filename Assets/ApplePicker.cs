@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,10 +10,14 @@ public class ApplePicker : MonoBehaviour
     public float basketBottomY = -14f;
     public float basketSpacingY = 2f;    
     public List<GameObject> basketList;
+
+    public AudioClip basketHitSound;
+    private AudioSource basketAudio;
     
     // Start is called before the first frame update
     void Start()
     {
+        basketAudio = GetComponent<AudioSource>();
         basketList = new List<GameObject>();
         for(int i = 0; i < numBaskets; i++)
         {
@@ -28,6 +31,7 @@ public class ApplePicker : MonoBehaviour
 
     public void AppleDestroyed()
     {
+        basketAudio.PlayOneShot(basketHitSound);
         GameObject[] tAppleArray = GameObject.FindGameObjectsWithTag("Apple");
         foreach(GameObject tGO in tAppleArray)
         {
@@ -45,9 +49,8 @@ public class ApplePicker : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DefeatBoss()
     {
-        
+        SceneManager.LoadSceneAsync(0);
     }
 }
